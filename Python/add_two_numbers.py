@@ -27,7 +27,7 @@ class ListNode(object):
         n = self
         s = ''
         while n:
-            s += str(n.val)
+            s += str(n.val) + '->'
             n = n.next
         return s
 
@@ -58,5 +58,6 @@ class Solution(object):
 if __name__ == '__main__':
     l1 = ListNode(1)
     l2 = ListNode(9).add_next(ListNode(9))
-    print l1, l2
+    print l1
+    print l2
     print Solution().addTwoNumbers(l1, l2)
