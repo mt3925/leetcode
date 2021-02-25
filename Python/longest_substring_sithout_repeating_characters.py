@@ -31,4 +31,4 @@ class Solution(object):
 
 
 if __name__ == '__main__':
-    print Solution().lengthOfLongestSubstring('dvdf')
+    print(Solution().lengthOfLongestSubstring('dvdf'))
