@@ -38,4 +38,12 @@
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
+        last = nums[0]
+        for item in nums[1:]:
+            if last - 1 < 0:
+                return False
+            last = max(last - 1, item)
+        return True
+
+
 # leetcode submit region end(Prohibit modification and deletion)
