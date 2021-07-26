@@ -59,14 +59,23 @@
 #         self.next = None
 
 class Solution:
+    # def hasCycle(self, head: ListNode) -> bool:
+    #     slow = fast = head
+    #     while 1:
+    #         if not fast or not fast.next:
+    #             return False
+    #         slow = slow.next
+    #         fast = fast.next.next
+    #         if fast == slow:
+    #             return True
+
     def hasCycle(self, head: ListNode) -> bool:
         slow = fast = head
-        while 1:
-            if not fast or not fast.next:
-                return False
+        while fast and fast.next:
             slow = slow.next
             fast = fast.next.next
-            if fast == slow:
+            if slow == fast:
                 return True
+        return False
         
 # leetcode submit region end(Prohibit modification and deletion)

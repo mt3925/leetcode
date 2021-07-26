@@ -66,25 +66,44 @@
 #         return head
 
 class Solution:
+    # def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
+    #     if left == 1:
+    #         return self.reverseN(head, right)
+    #     head.next = self.reverseBetween(head.next, left - 1, right - 1)
+    #     return head
+
+    # def reverseN(self, head, n):
+    #     after_right = None
+    #     def _reverseN(head, n):
+    #         nonlocal after_right
+    #         if n == 1:
+    #             after_right = head.next
+    #             return head
+    #
+    #         last = _reverseN(head.next, n - 1)
+    #         head.next.next = head
+    #         head.next = after_right
+    #         return last
+    #     return _reverseN(head, n)
+
     def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
+        if not head or not head.next:
+            return head
         if left == 1:
-            return self.reverseN(head, right)
-        head.next = self.reverseBetween(head.next, left - 1, right - 1)
+            new_head = self.reverseN(head, right)
+            return new_head
+        new_head = self.reverseBetween(head.next, left - 1, right - 1)
+        head.next = new_head
         return head
 
-    def reverseN(self, head, n):
-        after_right = None
-        def _reverseN(head, n):
-            nonlocal after_right
-            if n == 1:
-                after_right = head.next
-                return head
+    def reverseN(self, head: ListNode, k: int) -> ListNode:
+        if k <= 1:
+            return head
+        if not head or not head.next:
+            return head
 
-            last = _reverseN(head.next, n - 1)
-            head.next.next = head
-            head.next = after_right
-            return last
-        return _reverseN(head, n)
-
+        new_head = self.reverseN(head.next, k - 1)
+        head.next.next, head.next = head, head.next.next
+        return new_head
 
 # leetcode submit region end(Prohibit modification and deletion)

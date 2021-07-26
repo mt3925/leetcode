@@ -49,11 +49,19 @@
 #         self.next = None
 
 class Solution:
+    # def middleNode(self, head: ListNode) -> ListNode:
+    #     slow = fast = head
+    #     while fast and fast.next:
+    #         fast = fast.next.next
+    #         slow = slow.next
+    #     return slow
+
     def middleNode(self, head: ListNode) -> ListNode:
         slow = fast = head
         while fast and fast.next:
-            fast = fast.next.next
             slow = slow.next
+            fast = fast.next.next
         return slow
+
         
 # leetcode submit region end(Prohibit modification and deletion)

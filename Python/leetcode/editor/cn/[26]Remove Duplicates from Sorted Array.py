@@ -59,18 +59,29 @@
 
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
+    # def removeDuplicates(self, nums: List[int]) -> int:
+    #     if not nums:
+    #         return 0
+    #     left = 0
+    #     last = nums[0]
+    #     for idx, item in enumerate(nums[1:], start=1):
+    #         if item == last:
+    #             continue
+    #         left += 1
+    #         if idx != left:
+    #             nums[left] = item
+    #         last = item
+    #     return left + 1
+
     def removeDuplicates(self, nums: List[int]) -> int:
-        if not nums:
-            return 0
-        left = 0
-        last = nums[0]
-        for idx, item in enumerate(nums[1:], start=1):
-            if item == last:
-                continue
-            left += 1
-            if idx != left:
-                nums[left] = item
-            last = item
-        return left + 1
+        slow = 0
+        fast = 1
+        while fast < len(nums):
+            if nums[slow] != nums[fast]:
+                slow += 1
+                nums[slow] = nums[fast]
+            fast += 1
+        return slow + 1
+
 
 # leetcode submit region end(Prohibit modification and deletion)

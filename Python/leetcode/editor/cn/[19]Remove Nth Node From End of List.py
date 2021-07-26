@@ -45,16 +45,32 @@
 #         self.val = val
 #         self.next = next
 class Solution:
+    # def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+    #     slow = fast = head
+    #     for _ in range(n):
+    #         fast = fast.next
+    #     if not fast:
+    #         return head.next
+    #     while fast and fast.next:
+    #         fast = fast.next
+    #         slow = slow.next
+    #     slow.next = slow.next.next
+    #     return head
+
     def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+
         slow = fast = head
         for _ in range(n):
             fast = fast.next
         if not fast:
             return head.next
         while fast and fast.next:
-            fast = fast.next
             slow = slow.next
-        slow.next = slow.next.next
+            fast = fast.next
+
+        node = slow.next
+        slow.next = node.next
+        del node
         return head
 
 # leetcode submit region end(Prohibit modification and deletion)
