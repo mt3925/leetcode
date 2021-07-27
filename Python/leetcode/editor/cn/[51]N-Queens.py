@@ -34,19 +34,63 @@
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
+# class Solution:
+#     def solveNQueens(self, n: int) -> List[List[str]]:
+#
+#         board = [['.'] * n for _ in range(n)]
+#
+#         rst = []
+#
+#         def backtrack(row):
+#             if row >= n:
+#                 rst.append([''.join(i) for i in board])
+#                 return
+#
+#             for col in range(n):
+#                 if not is_valid(row, col):
+#                     continue
+#                 board[row][col] = 'Q'
+#                 backtrack(row + 1)
+#                 board[row][col] = '.'
+#
+#         def is_valid(row, col):
+#             # 判断 当前列是否满足
+#             for r in range(row):
+#                 if board[r][col] == 'Q':
+#                     return False
+#             # 判断左上是否满足
+#             c = col
+#             for r in range(row - 1, -1, -1):
+#                 c -= 1
+#                 if c < 0:
+#                     break
+#                 if board[r][c] == 'Q':
+#                     return False
+#             # 判断右上
+#             c = col
+#             for r in range(row - 1, -1, -1):
+#                 c += 1
+#                 if c >= n:
+#                     break
+#                 if board[r][c] == 'Q':
+#                     return False
+#             return True
+#
+#         backtrack(0)
+#         return rst
+
+
 class Solution:
     def solveNQueens(self, n: int) -> List[List[str]]:
-
-        board = [['.'] * n for _ in range(n)]
-
         rst = []
+        board = [['.'] * n for _ in range(n)]
 
         def backtrack(row):
             if row >= n:
                 rst.append([''.join(i) for i in board])
                 return
 
-            for col in range(n):
+            for col in range(0, n):
                 if not is_valid(row, col):
                     continue
                 board[row][col] = 'Q'
@@ -54,28 +98,26 @@ class Solution:
                 board[row][col] = '.'
 
         def is_valid(row, col):
-            # 判断 当前列是否满足
             for r in range(row):
                 if board[r][col] == 'Q':
                     return False
-            # 判断左上是否满足
-            c = col
-            for r in range(row - 1, -1, -1):
-                c -= 1
-                if c < 0:
+            tr, tc = row, col
+            while 1:
+                tr -= 1
+                tc -= 1
+                if tr < 0 or tc < 0:
                     break
-                if board[r][c] == 'Q':
+                if board[tr][tc] == 'Q':
                     return False
-            # 判断右上
-            c = col
-            for r in range(row - 1, -1, -1):
-                c += 1
-                if c >= n:
+            tr, tc = row, col
+            while 1:
+                tr -= 1
+                tc += 1
+                if tr < 0 or tc >= n:
                     break
-                if board[r][c] == 'Q':
+                if board[tr][tc] == 'Q':
                     return False
             return True
-
         backtrack(0)
         return rst
 
