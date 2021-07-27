@@ -38,18 +38,35 @@
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
+# class Solution:
+#     def combine(self, n: int, k: int) -> List[List[int]]:
+#
+#         rst = []
+#
+#         def backtrack(idx, path):
+#             for i in range(idx, n+1):
+#                 path.append(i)
+#                 if len(path) == k:
+#                     rst.append(path[:])
+#                 else:
+#                     backtrack(i+1, path)
+#                 path.pop()
+#         backtrack(1, [])
+#         return rst
+
+
 class Solution:
     def combine(self, n: int, k: int) -> List[List[int]]:
 
         rst = []
 
-        def backtrack(idx, path):
-            for i in range(idx, n+1):
+        def backtrack(start, path):
+            if len(path) == k:
+                rst.append(path[:])
+                return
+            for i in range(start, n + 1):
                 path.append(i)
-                if len(path) == k:
-                    rst.append(path[:])
-                else:
-                    backtrack(i+1, path)
+                backtrack(i + 1, path)
                 path.pop()
         backtrack(1, [])
         return rst

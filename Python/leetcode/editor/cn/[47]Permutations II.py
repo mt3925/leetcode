@@ -31,26 +31,49 @@
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
+# class Solution:
+#     def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+#
+#         rst = set()
+#         cnt = len(nums)
+#         used = [False] * cnt
+#
+#         def backtrack(nums, path):
+#             if len(path) == cnt:
+#                 rst.add(tuple(path[:]))
+#                 return
+#             for i in range(0, cnt):
+#                 if used[i]:
+#                     continue
+#                 path.append(nums[i])
+#                 used[i] = True
+#                 backtrack(nums, path)
+#                 path.pop()
+#                 used[i] = False
+#         backtrack(nums, [])
+#         return [list(i) for i in rst]
+
+
 class Solution:
     def permuteUnique(self, nums: List[int]) -> List[List[int]]:
 
-        rst = set()
-        cnt = len(nums)
-        used = [False] * cnt
+        rst = []
+        choices = collections.Counter(nums)
 
-        def backtrack(nums, path):
-            if len(path) == cnt:
-                rst.add(tuple(path[:]))
+        def backtrack(path):
+            if len(path) == len(nums):
+                rst.append(path[:])
                 return
-            for i in range(0, cnt):
-                if used[i]:
+
+            for n, cnt in choices.items():
+                if cnt <= 0:
                     continue
-                path.append(nums[i])
-                used[i] = True
-                backtrack(nums, path)
+                path.append(n)
+                choices[n] -= 1
+                backtrack(path)
+                choices[n] += 1
                 path.pop()
-                used[i] = False
-        backtrack(nums, [])
-        return [list(i) for i in rst]
+        backtrack([])
+        return rst
 
 # leetcode submit region end(Prohibit modification and deletion)

@@ -32,19 +32,34 @@
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
+# class Solution:
+#     def subsets(self, nums: List[int]) -> List[List[int]]:
+#         rst = [[]]
+#
+#         def backtrack(nums, idx, path):
+#             for i in range(idx, len(nums)):
+#                 num = nums[i]
+#                 path.append(num)
+#                 rst.append(path[:])
+#                 backtrack(nums, i + 1, path)
+#                 path.pop()
+#
+#         backtrack(nums, 0, [])
+#         return rst
+
+
 class Solution:
     def subsets(self, nums: List[int]) -> List[List[int]]:
-        rst = [[]]
+        rst = []
+        cnt = len(nums)
 
-        def backtrack(nums, idx, path):
-            for i in range(idx, len(nums)):
-                num = nums[i]
-                path.append(num)
-                rst.append(path[:])
-                backtrack(nums, i + 1, path)
+        def backtrack(path, start):
+            rst.append(path[:])
+            for i in range(start, cnt):
+                path.append(nums[i])
+                backtrack(path, i + 1)
                 path.pop()
-
-        backtrack(nums, 0, [])
+        backtrack([], 0)
         return rst
 
 # leetcode submit region end(Prohibit modification and deletion)

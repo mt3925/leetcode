@@ -25,6 +25,25 @@
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
+# class Solution:
+#     def permute(self, nums: List[int]) -> List[List[int]]:
+#
+#         rst = []
+#
+#         def backtrack(path, choices):
+#             if not choices:
+#                 rst.append(path[:])
+#                 return
+#
+#             for num in list(choices):
+#                 choices.remove(num)
+#                 path.append(num)
+#                 backtrack(path, choices)
+#                 path.pop()
+#                 choices.add(num)
+#         backtrack([], set(nums))
+#         return rst
+
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
 
@@ -34,13 +53,12 @@ class Solution:
             if not choices:
                 rst.append(path[:])
                 return
-
-            for num in list(choices):
-                choices.remove(num)
-                path.append(num)
+            for n in list(choices):
+                choices.remove(n)
+                path.append(n)
                 backtrack(path, choices)
                 path.pop()
-                choices.add(num)
+                choices.add(n)
         backtrack([], set(nums))
         return rst
 
