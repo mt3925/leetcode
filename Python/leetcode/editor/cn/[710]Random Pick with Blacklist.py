@@ -60,25 +60,46 @@
 import random
 
 
+# class Solution:
+#
+#     def __init__(self, N: int, blacklist: List[int]):
+#         query_map = {}
+#         rest_len = N - len(blacklist)
+#         bl_set = set(blacklist)
+#         right = N - 1
+#         for item in blacklist:
+#             if item < rest_len:
+#                 while right in bl_set:
+#                     right -= 1
+#                 query_map[item] = right
+#                 right -= 1
+#         self.query_map = query_map
+#         self.len = rest_len
+#
+#     def pick(self) -> int:
+#         idx = int(random.random() * self.len)
+#         return self.query_map.get(idx, idx)
+
+
 class Solution:
 
     def __init__(self, N: int, blacklist: List[int]):
-        query_map = {}
-        rest_len = N - len(blacklist)
+        self.data_map = {}
+        self.len = N - len(blacklist)
+        last = N - 1
         bl_set = set(blacklist)
-        right = N - 1
-        for item in blacklist:
-            if item < rest_len:
-                while right in bl_set:
-                    right -= 1
-                query_map[item] = right
-                right -= 1
-        self.query_map = query_map
-        self.len = rest_len
+        for num in blacklist:
+            if num < self.len:
+                while last in bl_set:
+                    last -= 1
+                if last < self.len:
+                    break
+                self.data_map[num] = last
+                last -= 1
 
     def pick(self) -> int:
-        idx = int(random.random() * self.len)
-        return self.query_map.get(idx, idx)
+        idx = random.randint(0, self.len - 1)
+        return self.data_map.get(idx, idx)
 
 
 # Your Solution object will be instantiated and called as such:

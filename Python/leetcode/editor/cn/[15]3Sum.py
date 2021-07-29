@@ -69,35 +69,63 @@
 #             last_left = nums[left]
 #             left += 1
 #     return rst
-import bisect
-import collections
-from typing import List
-
-
+# import bisect
+# import collections
+# from typing import List
+#
+#
 class Solution:
+#     def threeSum(self, nums: List[int]) -> List[List[int]]:
+#         if len(nums) < 3:
+#             return []
+#
+#         cnt_map = collections.Counter(nums)
+#         rst = []
+#         vals = sorted(cnt_map.keys())
+#         for idx, item in enumerate(vals):
+#             if cnt_map[item] >= 2:
+#                 if item == 0 and cnt_map[0] >= 3:
+#                     rst.append([0, 0, 0])
+#                 if item != 0 and cnt_map[-2 * item] > 0:
+#                     rst.append([item, item, -2 * item])
+#
+#             if item < 0:
+#                 rest = -item
+#
+#                 left = bisect.bisect_left(vals, rest - vals[-1], lo=idx + 1)
+#                 right = bisect.bisect_right(vals, rest // 2, lo=left)
+#                 for item2 in vals[left:right]:
+#                     item3 = rest - item2
+#                     if item3 in cnt_map and item3 != item2:
+#                         rst.append([item, item2, item3])
+#         return rst
+
     def threeSum(self, nums: List[int]) -> List[List[int]]:
-        if len(nums) < 3:
-            return []
+        checked = set()
 
-        cnt_map = collections.Counter(nums)
+        def twoSum(need, start):
+            n_set = set()
+            rst = []
+            used = set()
+            for i in nums[start:]:
+                if i in checked or i in used:
+                    continue
+                if (need - i) in n_set:
+                    rst.append([need - i, i])
+                    used.add(need - i)
+                    used.add(i)
+                n_set.add(i)
+            return rst
+
         rst = []
-        vals = sorted(cnt_map.keys())
-        for idx, item in enumerate(vals):
-            if cnt_map[item] >= 2:
-                if item == 0 and cnt_map[0] >= 3:
-                    rst.append([0, 0, 0])
-                if item != 0 and cnt_map[-2 * item] > 0:
-                    rst.append([item, item, -2 * item])
-
-            if item < 0:
-                rest = -item
-
-                left = bisect.bisect_left(vals, rest - vals[-1], lo=idx + 1)
-                right = bisect.bisect_right(vals, rest // 2, lo=left)
-                for item2 in vals[left:right]:
-                    item3 = rest - item2
-                    if item3 in cnt_map and item3 != item2:
-                        rst.append([item, item2, item3])
+        for idx, n in enumerate(nums):
+            if n in checked:
+                continue
+            need = 0 - n
+            two_rst = twoSum(need, start=idx + 1)
+            if two_rst:
+                rst.extend([[n]+i for i in two_rst])
+            checked.add(n)
         return rst
 
 # leetcode submit region end(Prohibit modification and deletion)

@@ -52,14 +52,31 @@
 
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
+    # def corpFlightBookings(self, bookings: List[List[int]], n: int) -> List[int]:
+    #     diff = [0] * (n + 1)
+    #     for start, end, num in bookings:
+    #         diff[start] += num
+    #         if end < n:
+    #             diff[end+1] -= num
+    #     for i in range(1, n + 1):
+    #         diff[i] += diff[i-1]
+    #     return diff[1:]
+
     def corpFlightBookings(self, bookings: List[List[int]], n: int) -> List[int]:
-        diff = [0] * (n + 1)
-        for start, end, num in bookings:
-            diff[start] += num
-            if end < n:
-                diff[end+1] -= num
-        for i in range(1, n + 1):
-            diff[i] += diff[i-1]
-        return diff[1:]
+
+        delta_list = [0] * n
+        for s, e, v in bookings:
+            if s - 1 >= 0:
+                delta_list[s-1] += v
+            if e < n:
+                delta_list[e] -= v
+
+        prev = 0
+        rst = []
+        for i in delta_list:
+            rst.append(i + prev)
+            prev = i + prev
+        return rst
+
 
 # leetcode submit region end(Prohibit modification and deletion)

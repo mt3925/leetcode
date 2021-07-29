@@ -44,13 +44,21 @@
 
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
+    # def twoSum(self, nums: List[int], target: int) -> List[int]:
+    #     rest_map = {}
+    #     for idx, item in enumerate(nums):
+    #         if item in rest_map:
+    #             return [rest_map[item], idx]
+    #         rest = target - item
+    #         rest_map[rest] = idx
+    #     return []
+
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        rest_map = {}
-        for idx, item in enumerate(nums):
-            if item in rest_map:
-                return [rest_map[item], idx]
-            rest = target - item
-            rest_map[rest] = idx
-        return []
+        num_map = {}
+        for idx, n in enumerate(nums):
+            pre_idx = num_map.get(target - n)
+            if pre_idx is not None:
+                return [pre_idx, idx]
+            num_map[n] = idx
 
 # leetcode submit region end(Prohibit modification and deletion)

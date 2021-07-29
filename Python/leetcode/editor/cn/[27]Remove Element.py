@@ -65,22 +65,40 @@
 
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
+    # def removeElement(self, nums: List[int], val: int) -> int:
+    #     if not nums:
+    #         return 0
+    #
+    #     left = 0
+    #     right = len(nums) - 1
+    #     while left <= right:
+    #         if nums[left] == val:
+    #             while right >= left and nums[right] == val:
+    #                 right -= 1
+    #             if right < left:
+    #                 break
+    #             nums[left] = nums[right]
+    #             right -= 1
+    #         left += 1
+    #     return right + 1
+
     def removeElement(self, nums: List[int], val: int) -> int:
         if not nums:
             return 0
-
         left = 0
         right = len(nums) - 1
         while left <= right:
-            if nums[left] == val:
-                while right >= left and nums[right] == val:
-                    right -= 1
-                if right < left:
-                    break
+            if nums[left] != val:
+                left += 1
+                continue
+            while right > left and nums[right] == val:
+                right -= 1
+            if left < right:
                 nums[left] = nums[right]
                 right -= 1
-            left += 1
-        return right + 1
-
+                left += 1
+            else:
+                break
+        return left
 
 # leetcode submit region end(Prohibit modification and deletion)

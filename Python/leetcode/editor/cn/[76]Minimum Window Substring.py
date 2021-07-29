@@ -60,30 +60,60 @@ import collections
 #         return ''
 
 
+# class Solution:
+#     def minWindow(self, s: str, t: str) -> str:
+#         need = collections.Counter(t)
+#         target_len = len(t)
+#
+#         left = 0
+#         rst_idx = 0
+#         rst_len = 0
+#         for right in range(len(s)):
+#             if need[s[right]] > 0:
+#                 target_len -= 1
+#             need[s[right]] -= 1
+#
+#             while target_len == 0:
+#                 _len = right - left + 1
+#                 if not rst_len or rst_len > _len:
+#                     rst_idx = left
+#                     rst_len = _len
+#
+#                 need[s[left]] += 1
+#                 if need[s[left]] > 0:
+#                     target_len += 1
+#                 left += 1
+#         return s[rst_idx: rst_idx + rst_len] if rst_len else ''
+
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
+        need_len = len(t)
+        s_len = len(s)
         need = collections.Counter(t)
-        target_len = len(t)
 
-        left = 0
-        rst_idx = 0
-        rst_len = 0
-        for right in range(len(s)):
-            if need[s[right]] > 0:
-                target_len -= 1
-            need[s[right]] -= 1
+        left = right = 0
+        rst_start = -1
+        rst_len = s_len + 1
+        while right < s_len:
+            c = s[right]
+            if need[c] > 0:
+                need_len -= 1
+            need[c] -= 1
+            right += 1
 
-            while target_len == 0:
-                _len = right - left + 1
-                if not rst_len or rst_len > _len:
-                    rst_idx = left
-                    rst_len = _len
-
-                need[s[left]] += 1
-                if need[s[left]] > 0:
-                    target_len += 1
+            while need_len == 0:
+                lc = s[left]
+                need[lc] += 1
+                if need[lc] > 0:
+                    need_len += 1
+                    if right - left < rst_len:
+                        rst_start = left
+                        rst_len = right - left
                 left += 1
-        return s[rst_idx: rst_idx + rst_len] if rst_len else ''
+        if rst_start < 0:
+            return ""
+        return s[rst_start: rst_start+rst_len]
+
 # leetcode submit region end(Prohibit modification and deletion)
 
 

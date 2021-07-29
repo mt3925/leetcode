@@ -72,16 +72,27 @@ class Solution:
     #             nums[left] = item
     #         last = item
     #     return left + 1
+    #
+    # def removeDuplicates(self, nums: List[int]) -> int:
+    #     slow = 0
+    #     fast = 1
+    #     while fast < len(nums):
+    #         if nums[slow] != nums[fast]:
+    #             slow += 1
+    #             nums[slow] = nums[fast]
+    #         fast += 1
+    #     return slow + 1
 
     def removeDuplicates(self, nums: List[int]) -> int:
-        slow = 0
-        fast = 1
-        while fast < len(nums):
-            if nums[slow] != nums[fast]:
-                slow += 1
-                nums[slow] = nums[fast]
-            fast += 1
-        return slow + 1
+
+        left = right = 0
+        while right < len(nums):
+            if nums[right] == nums[left]:
+                right += 1
+            else:
+                left += 1
+                nums[left] = nums[right]
+        return left + 1
 
 
 # leetcode submit region end(Prohibit modification and deletion)
