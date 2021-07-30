@@ -74,89 +74,164 @@
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
+# class LFUCache:
+#
+#     def __init__(self, capacity: int):
+#         self.capacity = capacity
+#         self.freq_map = {}  # 访问次数 -> (该次数对应双向链表头、尾节点)
+#         self.node_map = {}  # key -> node
+#         self.count = 0
+#         self.min_freq = 0
+#
+#     def get(self, key: int) -> int:
+#         if self.capacity <= 0:
+#             return -1
+#         node = self.node_map.get(key)
+#         if not node:
+#             return -1
+#
+#         self.remove_node(node)
+#         self.add_node_freq(node)
+#         return node.value
+#
+#     def remove_node(self, node):
+#         node.next.prev = node.prev
+#         node.prev.next = node.next
+#         head, tail = self.freq_map.get(node.freq)
+#         if head.next == tail:
+#             del self.freq_map[node.freq]
+#             if self.min_freq == node.freq:
+#                 self.min_freq = 0
+#
+#     def add_node_freq(self, node):
+#         node.freq += 1
+#         head, tail = self.get_or_add_head_tail(node.freq)
+#         self.add_to_head(head, node)
+#         if not self.min_freq or self.min_freq > node.freq:
+#             self.min_freq = node.freq
+#
+#     def get_or_add_head_tail(self, freq):
+#         rtn = self.freq_map.get(freq)
+#         if not rtn:
+#             head, tail = (ListNode(-1, -1), ListNode(-1, -1))
+#             head.next = tail
+#             tail.prev = head
+#             self.freq_map[freq] = (head, tail)
+#         else:
+#             head, tail = rtn
+#         return head, tail
+#
+#     def add_to_head(self, head, node):
+#         node.next = head.next
+#         node.prev = head
+#         head.next.prev = node
+#         head.next = node
+#
+#     def put(self, key: int, value: int) -> None:
+#         if self.capacity <= 0:
+#             return
+#         node = self.node_map.get(key)
+#         if node:
+#             node.value = value
+#             self.remove_node(node)
+#             self.add_node_freq(node)
+#             return
+#
+#         if self.count >= self.capacity:
+#             _, tail = self.freq_map[self.min_freq]
+#             node = tail.prev
+#             self.remove_node(node)
+#             self.count -= 1
+#             del self.node_map[node.key]
+#
+#         node = ListNode(key, value)
+#         self.node_map[key] = node
+#         self.add_node_freq(node)
+#         self.count += 1
+#
+#
+# class ListNode:
+#     def __init__(self, key, value):
+#         self.key = key
+#         self.value = value
+#         self.prev = None
+#         self.next = None
+#         self.freq = 0
+
+
 class LFUCache:
 
     def __init__(self, capacity: int):
         self.capacity = capacity
-        self.freq_map = {}  # 访问次数 -> (该次数对应双向链表头、尾节点)
-        self.node_map = {}  # key -> node
-        self.count = 0
-        self.min_freq = 0
+        self.freq_key_map = {}
+        self.key_node_map = {}
+        self.min_freq = 1
+        self.size = 0
 
     def get(self, key: int) -> int:
-        if self.capacity <= 0:
-            return -1
-        node = self.node_map.get(key)
+        node = self.key_node_map.get(key)
         if not node:
             return -1
+        self.incr_freq(node)
+        return node.val
 
-        self.remove_node(node)
-        self.add_node_freq(node)
-        return node.value
-
-    def remove_node(self, node):
-        node.next.prev = node.prev
-        node.prev.next = node.next
-        head, tail = self.freq_map.get(node.freq)
+    def incr_freq(self, node):
+        node.prev.next, node.next.prev = node.next, node.prev
+        head, tail = self.freq_key_map.get(node.freq)
         if head.next == tail:
-            del self.freq_map[node.freq]
-            if self.min_freq == node.freq:
-                self.min_freq = 0
-
-    def add_node_freq(self, node):
+            del self.freq_key_map[node.freq]
+            if self.min_freq == node.freq:  # 易错处 只有最小频次为空时才增加
+                self.min_freq += 1
         node.freq += 1
-        head, tail = self.get_or_add_head_tail(node.freq)
-        self.add_to_head(head, node)
-        if not self.min_freq or self.min_freq > node.freq:
-            self.min_freq = node.freq
+        new_head, _ = self.freq_key_map.setdefault(node.freq, self.gen_new_head_tail())
+        node.prev = new_head
+        node.next = new_head.next
+        new_head.next.prev = node
+        new_head.next = node
 
-    def get_or_add_head_tail(self, freq):
-        rtn = self.freq_map.get(freq)
-        if not rtn:
-            head, tail = (ListNode(-1, -1), ListNode(-1, -1))
-            head.next = tail
-            tail.prev = head
-            self.freq_map[freq] = (head, tail)
-        else:
-            head, tail = rtn
+    def gen_new_head_tail(self):
+        head = Node()
+        tail = Node()
+        head.next = tail
+        tail.prev = head
         return head, tail
 
-    def add_to_head(self, head, node):
-        node.next = head.next
-        node.prev = head
-        head.next.prev = node
-        head.next = node
-
     def put(self, key: int, value: int) -> None:
-        if self.capacity <= 0:
+        if self.capacity == 0:
             return
-        node = self.node_map.get(key)
+        node = self.key_node_map.get(key)
         if node:
-            node.value = value
-            self.remove_node(node)
-            self.add_node_freq(node)
+            node.val = value
+            self.incr_freq(node)
             return
+        if self.size >= self.capacity:
+            self.del_lfu()
+        self.min_freq = 1
+        new_head, _ = self.freq_key_map.setdefault(1, self.gen_new_head_tail())
+        node = Node(key, value)
+        new_head.next.prev = node
+        node.next = new_head.next
+        new_head.next = node
+        node.prev = new_head
+        self.key_node_map[key] = node
+        self.size += 1
 
-        if self.count >= self.capacity:
-            _, tail = self.freq_map[self.min_freq]
-            node = tail.prev
-            self.remove_node(node)
-            self.count -= 1
-            del self.node_map[node.key]
-
-        node = ListNode(key, value)
-        self.node_map[key] = node
-        self.add_node_freq(node)
-        self.count += 1
+    def del_lfu(self):
+        head, tail = self.freq_key_map[self.min_freq]
+        node = tail.prev
+        node.prev.next, node.next.prev = node.next, node.prev
+        if head.next == tail:
+            del self.freq_key_map[self.min_freq]
+        self.size -= 1
+        del self.key_node_map[node.key]
 
 
-class ListNode:
-    def __init__(self, key, value):
+class Node:
+    def __init__(self, key=None, val=None, freq=1):
         self.key = key
-        self.value = value
-        self.prev = None
-        self.next = None
-        self.freq = 0
+        self.val = val
+        self.freq = freq
+        self.prev = self.next = None
 
 
 # Your LFUCache object will be instantiated and called as such:
@@ -166,17 +241,17 @@ class ListNode:
 # leetcode submit region end(Prohibit modification and deletion)
 
 # if __name__ == '__main__':
-#     # obj = LFUCache(2)
-#     # obj.put(1, 1)
-#     # obj.put(2, 2)
-#     # print(obj.get(1), )
-#     # obj.put(3, 3)
-#     # print(obj.get(2), )
-#     # print(obj.get(3), )
-#     # obj.put(4, 4)
-#     # print(obj.get(1), )
-#     # print(obj.get(3), )
-#     # print(obj.get(4), )
+#     obj = LFUCache(2)
+#     obj.put(1, 1)
+#     obj.put(2, 2)
+#     print(obj.get(1), )
+#     obj.put(3, 3)
+#     print(obj.get(2), )
+#     print(obj.get(3), )
+#     obj.put(4, 4)
+#     print(obj.get(1), )
+#     print(obj.get(3), )
+#     print(obj.get(4), )
 #
 #     import json
 #     s = [[10],[10,13],[3,17],[6,11],[10,5],[9,10],[13],[2,19],[2],[3],[5,25],[8],[9,22],[5,5],[1,30],[11],[9,12],[7],[5],[8],[9],[4,30],[9,3],[9],[10],[10],[6,14],[3,1],[3],[10,11],[8],[2,14],[1],[5],[4],[11,4],[12,24],[5,18],[13],[7,23],[8],[12],[3,27],[2,12],[5],[2,9],[13,4],[8,18],[1,7],[6],[9,29],[8,21],[5],[6,30],[1,12],[10],[4,15],[7,22],[11,26],[8,17],[9,29],[5],[3,4],[11,30],[12],[4,29],[3],[9],[6],[3,4],[1],[10],[3,29],[10,28],[1,20],[11,13],[3],[3,12],[3,8],[10,9],[3,26],[8],[7],[5],[13,17],[2,27],[11,15],[12],[9,19],[2,15],[3,16],[1],[12,17],[9,1],[6,19],[4],[5],[5],[8,1],[11,7],[5,2],[9,28],[1],[2,2],[7,4],[4,22],[7,24],[9,26],[13,28],[11,26]]
