@@ -80,7 +80,7 @@
 #         return rst
 
 
-class Solution:
+class Solution1:
     def solveNQueens(self, n: int) -> List[List[str]]:
         rst = []
         board = [['.'] * n for _ in range(n)]
@@ -120,5 +120,39 @@ class Solution:
             return True
         backtrack(0)
         return rst
+
+
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        board = [['.'] * n for _ in range(n)]
+        rst = []
+
+        def _is_ok(row, col):
+            for r in range(row):
+                if board[r][col] == 'Q':
+                    return False
+                left_col = col - (row - r)
+                right_col = col + (row - r)
+                if left_col >= 0 and board[r][left_col] == 'Q':
+                    return False
+                if right_col < n and board[r][right_col] == 'Q':
+                    return False
+            return True
+
+        def _backtrack(row):
+            if row >= n:
+                rst.append([''.join(i) for i in board])
+                return
+
+            for col in range(n):
+                if not _is_ok(row, col):
+                    continue
+                board[row][col] = 'Q'
+                _backtrack(row + 1)
+                board[row][col] = '.'
+
+        _backtrack(0)
+        return rst
+
 
 # leetcode submit region end(Prohibit modification and deletion)
