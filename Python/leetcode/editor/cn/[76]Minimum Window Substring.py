@@ -85,34 +85,56 @@ import collections
 #                 left += 1
 #         return s[rst_idx: rst_idx + rst_len] if rst_len else ''
 
+# class Solution:
+#     def minWindow(self, s: str, t: str) -> str:
+#         need_len = len(t)
+#         s_len = len(s)
+#         need = collections.Counter(t)
+#
+#         left = right = 0
+#         rst_start = -1
+#         rst_len = s_len + 1
+#         while right < s_len:
+#             c = s[right]
+#             if need[c] > 0:
+#                 need_len -= 1
+#             need[c] -= 1
+#             right += 1
+#
+#             while need_len == 0:
+#                 lc = s[left]
+#                 need[lc] += 1
+#                 if need[lc] > 0:
+#                     need_len += 1
+#                     if right - left < rst_len:
+#                         rst_start = left
+#                         rst_len = right - left
+#                 left += 1
+#         if rst_start < 0:
+#             return ""
+#         return s[rst_start: rst_start+rst_len]
+
+
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        need_len = len(t)
-        s_len = len(s)
-        need = collections.Counter(t)
-
         left = right = 0
-        rst_start = -1
-        rst_len = s_len + 1
-        while right < s_len:
-            c = s[right]
-            if need[c] > 0:
-                need_len -= 1
-            need[c] -= 1
+        window_map = collections.Counter(t)
+        min_start = 0
+        min_len = len(s) + 1
+
+        while right < len(s):
+            if s[right] in window_map:
+                window_map[s[right]] -= 1
             right += 1
 
-            while need_len == 0:
-                lc = s[left]
-                need[lc] += 1
-                if need[lc] > 0:
-                    need_len += 1
-                    if right - left < rst_len:
-                        rst_start = left
-                        rst_len = right - left
+            while all([i <= 0 for i in window_map.values()]) and left <= right:
+                if right - left < min_len:
+                    min_start = left
+                    min_len = right - left
+                if s[left] in window_map:
+                    window_map[s[left]] += 1
                 left += 1
-        if rst_start < 0:
-            return ""
-        return s[rst_start: rst_start+rst_len]
+        return s[min_start: min_start + min_len] if min_len <= len(s) else ""
 
 # leetcode submit region end(Prohibit modification and deletion)
 
