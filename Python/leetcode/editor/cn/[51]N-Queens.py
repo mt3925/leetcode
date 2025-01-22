@@ -31,6 +31,8 @@
 #  
 #  Related Topics 回溯算法 
 #  👍 846 👎 0
+import copy
+from typing import List
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
@@ -153,6 +155,48 @@ class Solution:
 
         _backtrack(0)
         return rst
+
+
+class Solution2:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        board = [['.'] * n for _ in range(n)]
+        rst = []
+        self.backtrack(board, n, 0, rst)
+        print(rst)
+        return rst
+
+    def backtrack(self, board, n, row, rst):
+        if row == n:
+            rst.append([''.join(i) for i in board])
+            return
+        for col in range(n):
+            if not self.check(board, row, col, n):
+                continue
+            board[row][col] = 'Q'
+            self.backtrack(board, n, row + 1, rst)
+            board[row][col] = '.'
+
+    def check(self, board, row, col, n):
+        for _row in range(row):
+            if board[_row][col] == 'Q':
+                return False
+        r, c = row, col
+        while r >= 0 and c >= 0:
+            r -= 1
+            c -= 1
+            if r >= 0 and c >= 0 and board[r][c] == 'Q':
+                return False
+        r, c = row, col
+        while r >= 0 and c < n:
+            r -= 1
+            c += 1
+            if r >= 0 and c < n and board[r][c] == 'Q':
+                return False
+        return True
+
+
+if __name__ == '__main__':
+    print(Solution1().solveNQueens(5))
 
 
 # leetcode submit region end(Prohibit modification and deletion)
